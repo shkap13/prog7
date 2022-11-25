@@ -23,17 +23,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
 
     public void setCurrentPathString(String currPathInput){
         currPathInput = "file:" + currPathInput;
-        System.out.println("currpathinput is: " + currPathInput);
+        // System.out.println("currpathinput is: " + currPathInput);
         currentPathString = currPathInput;
-        // for(int i = currPathInput.length() - 1; i >= 0; i--){
-        //     if(currPathInput.substring(i, i + 1).equals("/")){
-        //         break;
-        //     }
-            
-        //     currentPathString = currentPathString.substring(0,i);
-        //     // System.out.println("currentPathString is: " + currentPathString);
 
-        // }
 
         for(int i = currPathInput.length() - 1; i >= 0; i--){
             if(currPathInput.substring(i, i + 1).equals("/")){
@@ -41,9 +33,10 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             }
             
             currentPathString = currentPathString.substring(0,i);
-            // System.out.println("currentPathString is: " + currentPathString);
 
         }
+        // System.out.println("currentPathString is: " + currentPathString);
+
     }
     
 
@@ -151,6 +144,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         //System.out.println("End element:   " + elementName);
     }
 
+    //WHAT DO WE HAVE TO DO
     /**
     * Called whenever characters are found inside a tag. Note that the parser is not
     * required to return all characters in the tag in a single chunk. Whitespace is
@@ -167,21 +161,21 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             // Instead of printing raw whitespace, we're escaping it
             switch(ch[i]) {
                 case '\\':
-                    //System.out.print("\\\\");
+                    System.out.print("\\\\");
                     break;
                 case '"':
-                    //System.out.print("\\\"");
+                    System.out.print("\\\"");
                     break;
                 case '\n':
-                    //System.out.print("\\n");;
+                    System.out.print("\\n");;
                 case '\r':
-                    //System.out.print("\\r");
+                    System.out.print("\\r");
                     break;
                 case '\t':
-                    //System.out.print("\\t");
+                    System.out.print("\\t");
                     break;
                 default:
-                    //System.out.print(ch[i]);
+                    System.out.print(ch[i]);
                     break;
             }
         }

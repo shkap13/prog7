@@ -29,6 +29,7 @@ public class WebCrawler {
         Queue<URL> remaining = new LinkedList<>();
         for (String url : args) {
             try {
+                System.out.println(url);
                 remaining.add(new URL(url));
             } catch (MalformedURLException e) {
                 // Throw this one out!

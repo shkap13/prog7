@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1> PAGE 1</h1>
+        <p>
+            <a href="page2"> click for page 2 </a>
+            <a href="page3"> click for page 3 </a>
+        </p>
+    </body>
+</html>
