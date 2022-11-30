@@ -11,17 +11,21 @@ import org.attoparser.simple.*;
  * TODO: Implement this!
  */
 public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
+    String path;
     String absolutePath;
     String currentPathString;
     ArrayList<String> allPaths;
     int allPathsIndex;
     String pageString;
+    WebIndex wIndex;
+
 
     public CrawlingMarkupHandler() {
         absolutePath = "";
         currentPathString = "";
         allPaths = new ArrayList<String>();
         int allPathsIndex = 0;
+        wIndex = new WebIndex();
     }
 
     public void setCurrentPathString(String currPathInput){
@@ -54,8 +58,8 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * This method returns the complete index that has been crawled thus far when called.
     */
     public Index getIndex() {
-        // TODO: Implement this!
-        return new WebIndex();
+        wIndex.addURl(pageString);
+        return wIndex;
     }
 
     /**
@@ -98,8 +102,8 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col             the column of the document where parsing starts
     */
     public void handleDocumentStart(long startTimeNanos, int line, int col) {
-        
-        // TODO: Implement this.
+        // System.out.println("IN HANDLE DOCUMENT START PATH: " + absolutePath);
+        pageString = absolutePath;
         //System.out.println("Start of document");
     }
 
@@ -112,7 +116,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col             the column of the document where the parsing ends
     */
     public void handleDocumentEnd(long endTimeNanos, long totalTimeNanos, int line, int col) {
-        // TODO: Implement this.
+        // TODO: CONVERT ALL LONG SPACES TO SINGLE SPACE FOR WEBINDEX
         //System.out.println("End of document");
     }
 
@@ -145,7 +149,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         
         if(attributes != null){
             if(attributes.get("href") != null){
-                String path = currentPathString + attributes.get("href");
+                path = currentPathString + attributes.get("href");
                 
                 if(!allPaths.contains(path)){
                     System.out.println("path is: " + path);
@@ -179,31 +183,52 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param length  number of characters in ch
     */
     public void handleText(char[] ch, int start, int length, int line, int col) {
-        // TODO: Implement this.
-        //System.out.print("Characters:    \"");
 
+        //ONLY IN BODY TAG
         for(int i = start; i < start + length; i++) {
             // Instead of printing raw whitespace, we're escaping it
             switch(ch[i]) {
                 case '\\':
+                    pageString = pageString + " ";
                     System.out.print("\\\\");
                     break;
                 case '"':
+                    pageString = pageString + " ";
+                    System.out.print("\\\"");
+                    break;
+                case '\'':
+                    //shouldn't change the string
+                    //pageString = pageString + "";
                     System.out.print("\\\"");
                     break;
                 case '\n':
+                    pageString = pageString + " ";
                     System.out.print("\\n");;
                 case '\r':
+                    pageString = pageString + " ";
                     System.out.print("\\r");
                     break;
                 case '\t':
+                    pageString = pageString + " ";
                     System.out.print("\\t");
                     break;
+                case '.':
+                    pageString = pageString + " ";
+                    break;
+                case '?':
+                    pageString = pageString + " ";
+                    break;
+                case '!':
+                    pageString = pageString + " ";
+                    break;
                 default:
+                    pageString = pageString + Character.toString(ch[i]);
                     System.out.print(ch[i]);
                     break;
             }
         }
+        System.out.println();
+
 
         //System.out.print("\"\n");
     }
