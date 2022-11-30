@@ -11,11 +11,14 @@ import org.attoparser.simple.*;
  * TODO: Implement this!
  */
 public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
+    String absolutePath;
     String currentPathString;
     ArrayList<String> allPaths;
     int allPathsIndex;
+    String pageString;
 
     public CrawlingMarkupHandler() {
+        absolutePath = "";
         currentPathString = "";
         allPaths = new ArrayList<String>();
         int allPathsIndex = 0;
@@ -38,7 +41,10 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         // System.out.println("currentPathString is: " + currentPathString);
 
     }
-    
+
+    public void getTheURL(URL url){
+        absolutePath = url.toString();
+    }
 
     public String getCurrentPathString(){
         return currentPathString;
@@ -63,7 +69,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             for(;allPathsIndex < allPaths.size(); allPathsIndex++){
                 list.add(new URL(allPaths.get(allPathsIndex)));
             }
-            // TODO: Implement this!
+            // System.out.println(list);
             return list;
         }
 
@@ -92,6 +98,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col             the column of the document where parsing starts
     */
     public void handleDocumentStart(long startTimeNanos, int line, int col) {
+        
         // TODO: Implement this.
         //System.out.println("Start of document");
     }
@@ -116,20 +123,38 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param line        the line in the document where this element appears
     * @param col         the column in the document where this element appears
     */
+    // public void handleOpenElement(String elementName, Map<String, String> attributes, int line, int col) {
+        
+    //     if(elementName.equals("a")){
+            
+    //         if(attributes.get("href") != null){
+    //             String path = currentPathString + attributes.get("href");
+                
+    //             if(!allPaths.contains(path)){
+    //                 System.out.println("path is: " + path);
+    //                 allPaths.add(path);
+    //             }
+
+    //         }
+    //     }
+    //     return;
+    //     //System.out.println("Start element: " + elementName);
+    // }
+
     public void handleOpenElement(String elementName, Map<String, String> attributes, int line, int col) {
         
-        if(elementName.equals("a")){
-            
+        if(attributes != null){
             if(attributes.get("href") != null){
                 String path = currentPathString + attributes.get("href");
                 
                 if(!allPaths.contains(path)){
+                    System.out.println("path is: " + path);
                     allPaths.add(path);
                 }
-
+    
             }
         }
-        return;
+       
         //System.out.println("Start element: " + elementName);
     }
 

@@ -63,6 +63,7 @@ public class WebCrawler {
         while (!remaining.isEmpty()) {
             //set current path string in crawling markup handler so that the entire path can be constructed
             handler.setCurrentPathString(remaining.peek().getFile());
+            handler.getTheURL(remaining.peek());
 
             try{
                 // Parse the next URL's page

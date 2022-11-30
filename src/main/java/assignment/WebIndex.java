@@ -1,4 +1,7 @@
 package assignment;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.net.URL;
 
 /**
  * A web-index which efficiently stores information about pages. Serialization is done automatically
@@ -11,6 +14,7 @@ public class WebIndex extends Index {
      * Needed for Serialization (provided by Index) - don't remove this!
      */
     private static final long serialVersionUID = 1L;
+    HashMap<URL, HashMap<String, HashSet<Integer>>> urlMap;
 
     // TODO: Implement all of this! You may choose your own data structures an internal APIs.
     // You should not need to worry about serialization (just make any other data structures you use
