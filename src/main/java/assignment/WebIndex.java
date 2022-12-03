@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,73 +19,65 @@ public class WebIndex extends Index {
      * Needed for Serialization (provided by Index) - don't remove this!
      */
     private static final long serialVersionUID = 1L;
-    HashMap<String, HashMap<URL, HashMap<String, HashSet<Integer>>>> wordMap;
+    HashMap<Page, HashMap<String, HashSet<Integer>>> urlMap;
 
     public WebIndex(){
-        wordMap = new HashMap<String, HashMap<URL, HashMap<String, HashSet<Integer>>>>();
+        urlMap = new HashMap<Page, HashMap<String, HashSet<Integer>>>();
         //first index will be the url
         // List<String> wordStrings = new ArrayList<String> (Arrays.asList(pageString.split(" ")));
     }
 
     public void addURl(String pageString){
-        String [] wordStrings = pageString.split(" ");
+
         try{
-            URL tempURL = new URL(wordStrings[0]);
-            setAllMaps(tempURL, wordStrings);
-        }
-        catch(MalformedURLException e){
-            System.err.println("Malformed URL Exception from WebIndex");
+            String [] wordStrings = pageString.split(" ");
+            Page tempPage = new Page(new URL(wordStrings[0]));
+    
+            if(urlMap.get(tempPage) != null){
+                urlMap.put(tempPage, setWordMap(wordStrings));
+            }
         }
 
-    
+        catch(MalformedURLException e){
+            System.err.println("Malformed URL while creating WebIndex");
+        }
+       
     }
 
-    public void setAllMaps(URL url, String [] wordStrings){
-        String currWord = "";
+    public HashMap<String, HashSet<Integer>> setWordMap(String [] wordStrings){
+        HashMap<String, HashSet<Integer>> wordMap = new HashMap<String, HashSet<Integer>>();
         
-        for(int i = 1; i < wordStrings.length; i++){
-            currWord = wordStrings[i];
+       for(int i = 1; i < wordStrings.length; i++){
             
-            if(wordMap.get(currWord) == null){
-                wordMap.put(currWord, new HashMap<URL, HashMap<String, HashSet<Integer>>>());
-                setNewURLMap(url, i, wordStrings);
+            if(wordMap.get(wordStrings[i]) == null){
+                HashSet<Integer> temp = new HashSet<Integer>();
+                temp.add(i);
+                wordMap.put(wordStrings[i], temp);
             }
             else{
-                
-                if(wordMap.get(currWord).get(url) == null){
-                    wordMap.get(currWord).put(url, new HashMap<String, HashSet<Integer>>());
-                    setNextWordMap(url, i, wordStrings);
-                }
-                else{
-                
-                    //checck if i+1 i not equal to wordStrings length
-                    if(wordMap.get(currWord).get(url).get(wordStrings[i+1]) == null){
-                        HashSet<Integer> temp = new HashSet<Integer>();
-                        temp.add(i+1);
-                        wordMap.get(currWord).get(url).put(wordStrings[i+1], temp);
-                    }
-                    else{
-                        wordMap.get(currWord).get(url).get(wordStrings[i+1]).add(i+1);
-                    }
-                }
+                wordMap.get(wordStrings[i]).add(i);
             }
+       }
+
+       return wordMap;
+    }
+
+    public void printWebIndex(){
+        System.out.println(urlMap);
+    }
+
+    public void printWordMap(String url){
+
+        try{
+            Page page = new Page(new URL(url));
+            System.out.println(urlMap.get(page));
+        }
+
+        catch(MalformedURLException e){
+            System.err.println("the stupid url u passed is illegal dumbass");
         }
 
     }
-
-    public void setNewURLMap(URL url, int index, String[] wordStrings){
-        wordMap.get(wordStrings[index]).put(url, new HashMap<String, HashSet<Integer>>());
-        setNextWordMap(url, index, wordStrings);
-    }
-
-    public void setNextWordMap(URL url, int index, String[] wordStrings){
-        HashSet<Integer> temp = new HashSet<Integer>();
-        temp.add(index+1);
-        wordMap.get(wordStrings[index]).get(url).put(wordStrings[index+1], temp);
-    }
-
- 
-
 
     // TODO: Implement all of this! You may choose your own data structures an internal APIs.
     // You should not need to worry about serialization (just make any other data structures you use
