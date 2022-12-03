@@ -19,6 +19,8 @@ public class WebCrawler {
     * you see fit, as long as it takes URLs as inputs and saves an Index at "index.db".
     */
     public static void main(String[] args) {
+
+        System.out.println("Hello World");
         // Basic usage information
         if (args.length == 0) {
             System.err.println("Error: No URLs specified.");
@@ -67,9 +69,11 @@ public class WebCrawler {
 
             try{
                 // Parse the next URL's page
+                // System.out.println("Here");
                 parser.parse(new InputStreamReader(remaining.poll().openStream()), handler);
                 // Add any new URLs
                 remaining.addAll(handler.newURLs());
+                handler.getIndex().save("index.db");
             }
             catch(Exception e){
                 continue;

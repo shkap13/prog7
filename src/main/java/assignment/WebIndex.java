@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * A web-index which efficiently stores information about pages. Serialization is done automatically
@@ -33,9 +34,12 @@ public class WebIndex extends Index {
             String [] wordStrings = pageString.split(" ");
             Page tempPage = new Page(new URL(wordStrings[0]));
     
-            if(urlMap.get(tempPage) != null){
+            if(urlMap.get(tempPage) == null){
                 urlMap.put(tempPage, setWordMap(wordStrings));
+                System.out.println("urls are getting added to the map");
+                System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
             }
+
         }
 
         catch(MalformedURLException e){
@@ -60,6 +64,28 @@ public class WebIndex extends Index {
        }
 
        return wordMap;
+    }
+
+    public ArrayList<Page> getURLForWord(String word){
+        ArrayList<Page> urlList = new ArrayList<Page>();
+        if(urlMap == null){
+            System.out.println("im fucking sobbing");
+        }
+        if(urlMap.keySet() == null){
+            System.out.println("im crying");
+        }
+        Iterator iter = urlMap.keySet().iterator();
+        
+        while(iter.hasNext()){
+            Page page = (Page) iter.next();
+            HashMap<String, HashSet<Integer>> map = urlMap.get(page);
+
+            if(map.get(word) != null){
+                urlList.add(page);
+            }
+        }    
+        
+        return urlList;   
     }
 
     public void printWebIndex(){
