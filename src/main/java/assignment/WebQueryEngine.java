@@ -33,12 +33,12 @@ public class WebQueryEngine {
      */
     public Collection<Page> query(String query) {
         String newquery = query.replaceAll("[ ]+", " ");
-        if(!newquery.contains("\"")){
+        if(!newquery.contains(" ")){
             return wordQuery(newquery);
         }
-        // else{
-        //     phraseQuery(newquery);
-        // }
+        else{
+            phraseQuery(newquery);
+        }
 
         return new LinkedHashSet<>();
     }
@@ -48,11 +48,11 @@ public class WebQueryEngine {
     }
 
     public Collection<Page> phraseQuery(String phrase){
-        parseQuery(String phrase);
+        parseQuery(String line);
 
     
 
-    public void parseQuery(String phrase){
-
+    public void parseQuery(String line){
+        
     }
 }
