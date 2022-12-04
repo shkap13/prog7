@@ -14,6 +14,10 @@ public class WebQueryEngine {
     public WebQueryEngine(WebIndex wIndex){
         index = wIndex;
     }
+
+    public WebQueryEngine(){
+        index = null;
+    }
     /**
      * Returns a WebQueryEngine that uses the given Index to construct answers to queries.
      *
@@ -36,9 +40,9 @@ public class WebQueryEngine {
         if(!newquery.contains(" ")){
             return wordQuery(newquery);
         }
-        else{
-            phraseQuery(newquery);
-        }
+        // else{
+        //     phraseQuery(newquery);
+        // }
 
         return new LinkedHashSet<>();
     }
@@ -47,12 +51,55 @@ public class WebQueryEngine {
         return index.getURLForWord(word);
     }
 
-    public Collection<Page> phraseQuery(String phrase){
-        parseQuery(String line);
+    // public Collection<Page> phraseQuery(String phrase){
+    //     parseQuery(String line);
 
-    
+    // }
 
     public void parseQuery(String line){
-        
+        Stack opStack = new Stack();
+        Queue que = new LinkedList<String>();
+
+        ArrayList<String> tokens = createTokens(line);
+    }
+
+    public ArrayList<String> createTokens(String line){
+        ArrayList<String> allTokens = new ArrayList<String>();
+        String token = "";
+        for(int i = 0; i < line.length(); ){
+
+            if(line.charAt(i) == '\"'){
+                String temp = createPhraseToken(i, line);
+                allTokens.add(temp);
+                i = i + temp.length() + 2;
+            }
+            else if((line.charAt(i) == '&') || (line.charAt(i) == '|') || (line.charAt(i) == '(') || (line.charAt(i) == ')')){
+                if(!token.equals("")){
+                    allTokens.add(token);
+                }
+                token = "";
+                allTokens.add(Character.toString(line.charAt(i)));
+                i++;
+            }
+            else{
+                token = token + Character.toString(line.charAt(i));
+                i++;
+            }
+        }
+
+        return allTokens;
+    }
+
+    public String createPhraseToken(int index, String line){
+        String phraseToken = "";
+        for(int i = index+1; i < line.length(); i++){
+            if(line.charAt(i) == '\"'){
+                return phraseToken;
+            }
+
+            phraseToken = phraseToken + Character.toString(line.charAt(i));
+        }
+
+        return phraseToken;
     }
 }
