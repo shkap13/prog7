@@ -58,7 +58,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * This method returns the complete index that has been crawled thus far when called.
     */
     public Index getIndex() {
-        System.out.println("this is getting called");
+        // System.out.println("this is getting called");
         
         return wIndex;
     }
@@ -74,7 +74,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             for(;allPathsIndex < allPaths.size(); allPathsIndex++){
                 list.add(new URL(allPaths.get(allPathsIndex)));
             }
-            System.out.println(list);
+            // System.out.println(list);
             return list;
         }
 
@@ -105,7 +105,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     public void handleDocumentStart(long startTimeNanos, int line, int col) {
         // System.out.println("IN HANDLE DOCUMENT START PATH: " + absolutePath);
         pageString = absolutePath + " ";
-        System.out.println("Start of document");
+        // System.out.println("Start of document");
     }
 
     /**
@@ -117,7 +117,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col             the column of the document where the parsing ends
     */
     public void handleDocumentEnd(long endTimeNanos, long totalTimeNanos, int line, int col) {
-        System.out.println("handling document end lmao?");
+        // System.out.println("handling document end lmao?");
         pageString = pageString.replaceAll("[ ]+", " ");
         wIndex.addURl(pageString);
         //System.out.println("End of document");
@@ -151,13 +151,13 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     public void handleOpenElement(String elementName, Map<String, String> attributes, int line, int col) {
         
         if(attributes != null){
-            System.out.println("attributs isnt null");
+            // System.out.println("attributs isnt null");
             if(attributes.get("href") != null){
-                System.out.println("geting a href");
+                // System.out.println("geting a href");
                 path = currentPathString + attributes.get("href");
-                System.out.println("here's the path that is being printed: " + path);
+                // System.out.println("here's the path that is being printed: " + path);
                 if(!allPaths.contains(path)){
-                    System.out.println("path is: " + path);
+                    // System.out.println("path is: " + path);
                     allPaths.add(path);
                 }
     
@@ -174,9 +174,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col         the column in the document where this element appears.
     */
     public void handleCloseElement(String elementName, int line, int col) {
-        System.out.println("handling close element");
+        // System.out.println("handling close element");
         // TODO: Implement this.
-        System.out.println("End element:   " + elementName);
+        // System.out.println("End element:   " + elementName);
     }
 
     //WHAT DO WE HAVE TO DO
@@ -190,7 +190,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     */
     public void handleText(char[] ch, int start, int length, int line, int col) {
 
-        System.out.println("handling text");
+        // System.out.println("handling text");
         //ONLY IN BODY TAG
         for(int i = start; i < start + length; i++) {
             // Instead of printing raw whitespace, we're escaping it

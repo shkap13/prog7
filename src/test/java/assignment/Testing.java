@@ -15,6 +15,8 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Queue;
+import java.util.LinkedList;
 
 import javax.security.auth.kerberos.KerberosPrincipal;
 
@@ -50,7 +52,23 @@ public class Testing {
             () -> assertTrue(eng.createTokens("\"abc\"&\"def\"").equals(token1)),
             () -> assertTrue(eng.createTokens("abcde|\"pqr hello\"&\"ged\"()").equals(token2))
         );
+    }
 
+    @Test 
+    public void testParseQueryQueue(){
+        WebQueryEngine eng = new WebQueryEngine();
+        Queue<String> actualQue = eng.parseQueryQueue("((hello&it)|(\"jk i love\"|lmao))");
+
+        Queue<String> que = new LinkedList<String>();
+        que.add("hello");
+        que.add("it");
+        que.add("&");
+        que.add("jk i love");
+        que.add("lmao");
+        que.add("|");
+        que.add("|");
+
+        assertTrue(actualQue.equals(que));
 
     }
 }

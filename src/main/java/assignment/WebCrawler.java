@@ -20,7 +20,7 @@ public class WebCrawler {
     */
     public static void main(String[] args) {
 
-        System.out.println("Hello World");
+        // System.out.println("Hello World");
         // Basic usage information
         if (args.length == 0) {
             System.err.println("Error: No URLs specified.");
@@ -31,7 +31,7 @@ public class WebCrawler {
         Queue<URL> remaining = new LinkedList<>();
         for (String url : args) {
             try {
-                System.out.println(url);
+                // System.out.println(url);
                 remaining.add(new URL(url));
             } catch (MalformedURLException e) {
                 // Throw this one out!

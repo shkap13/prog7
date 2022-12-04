@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Iterator;
 
 /**
@@ -36,8 +37,8 @@ public class WebIndex extends Index {
     
             if(urlMap.get(tempPage) == null){
                 urlMap.put(tempPage, setWordMap(wordStrings));
-                System.out.println("urls are getting added to the map");
-                System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
+                // System.out.println("urls are getting added to the map");
+                // System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
             }
 
         }
@@ -66,8 +67,8 @@ public class WebIndex extends Index {
        return wordMap;
     }
 
-    public ArrayList<Page> getURLForWord(String word){
-        ArrayList<Page> urlList = new ArrayList<Page>();
+    public HashSet<Page> getURLForWord(String word){
+        HashSet<Page> urlList = new HashSet<Page>();
         if(urlMap == null){
             System.out.println("im fucking sobbing");
         }
@@ -86,6 +87,10 @@ public class WebIndex extends Index {
         }    
         
         return urlList;   
+    }
+
+    public Set<Page> getAllURL(){
+        return urlMap.keySet();
     }
 
     public void printWebIndex(){
