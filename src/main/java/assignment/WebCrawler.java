@@ -20,7 +20,6 @@ public class WebCrawler {
     */
     public static void main(String[] args) {
 
-        // System.out.println("Hello World");
         // Basic usage information
         if (args.length == 0) {
             System.err.println("Error: No URLs specified.");
@@ -31,7 +30,6 @@ public class WebCrawler {
         Queue<URL> remaining = new LinkedList<>();
         for (String url : args) {
             try {
-                // System.out.println(url);
                 remaining.add(new URL(url));
             } catch (MalformedURLException e) {
                 // Throw this one out!
@@ -63,13 +61,13 @@ public class WebCrawler {
         // }
 
         while (!remaining.isEmpty()) {
+            System.out.println(remaining.peek().toString());
             //set current path string in crawling markup handler so that the entire path can be constructed
             handler.setCurrentPathString(remaining.peek().getFile());
             handler.getTheURL(remaining.peek());
 
             try{
                 // Parse the next URL's page
-                // System.out.println("Here");
                 parser.parse(new InputStreamReader(remaining.poll().openStream()), handler);
                 // Add any new URLs
                 remaining.addAll(handler.newURLs());

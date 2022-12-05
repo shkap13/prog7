@@ -37,70 +37,64 @@ public class WebQueryEngine {
      */
     public Collection<Page> query(String query) {
 
-        String newquery = query.replaceAll("[ ]+", " ");
+        String newquery = cleanUpQuery(query);        
 
         ArrayList<String> tokens = createTokens(query);
 
-        if(tokens.size() == 1){
+        if((tokens.size() == 1) || (tokens.size() == 2 && tokens.get(0).equals("!"))){
             if(newquery.charAt(0) == '!'){
-                System.out.println("got to negations for word");
                 Set<Page> allURL = index.getAllURL();
                 allURL.removeAll(wordQuery(newquery.substring(1)));
                 return allURL;
             }
+            if(newquery.charAt(0) == '\"'){
+                return phraseQuery(tokens.get(0));
+            }
             return wordQuery(newquery);
         }
         else{
-            return phraseQuery(tokens);
+            return complexQuery(tokens);
         }
 
     }
 
     public HashSet<Page> wordQuery(String word){
         HashSet<Page> lol = index.getURLForWord(word);
-        System.out.println(lol);
         return lol;
     }
 
-    public Set<Page> phraseQuery(ArrayList<String> tokens){
-        System.out.println("in phrase query at all");
+    public HashSet<Page> phraseQuery(String phrase){
+        String [] words = phrase.split(" ");
+
+        return index.getURLForAllPhrase(index.getURLForAllWords(words), words);
+    }
+
+    public Set<Page> complexQuery(ArrayList<String> tokens){
         Queue<String> que = parseQueryQueue(tokens);
         String qpoll;
-        boolean isString;
 
         Stack<Set <Page>> finalStack = new Stack<Set <Page>>();
 
         while(!que.isEmpty()){
             qpoll = que.poll();
-            System.out.println("qpoll is: " + qpoll);
             
+            //pushes to stack if not operator
             if(!((qpoll.equals("&")) || (qpoll.equals("|")) || (qpoll.equals("!")))){
-                finalStack.push(wordQuery(qpoll));
+                if(qpoll.contains(" ")){
+                    finalStack.push(phraseQuery(qpoll));
+                }
+                else{
+                    finalStack.push(wordQuery(qpoll));
+                }
             }
             else{
-                System.out.println("into phrase query for operators");
-                String stringTok1 = "";
                 Set<Page> setTok1 = null;
 
-                // if(finalStack.peek() instanceof String){
-                //     stringTok1 = (String) finalStack.pop();
-                //     setTok1 = wordQuery(stringTok1);
-                //     // isString = true;
-                // }
-                // else{
-                    setTok1 = (Set<Page>) finalStack.pop();
-                    // isString = false;
-                // }
-
+                setTok1 = finalStack.pop();
+            
+                //dealing with !
                 if(qpoll.equals("!")){
-                    Set<Page> allURLSet = index.getAllURL();
-                    
-                    // if(isString){
-                    //     finalStack.push(allURLSet.removeAll(wordQuery(stringTok1)));
-                    // }
-                    // else{
-                    //     finalStack.push(allURLSet.removeAll(setTok1));
-                    // }
+                    HashSet<Page> allURLSet = new HashSet<Page>(index.getAllURL());
 
                     allURLSet.remove(setTok1);
                     finalStack.push(allURLSet);
@@ -108,24 +102,14 @@ public class WebQueryEngine {
                 else{
                     String stringTok2 = "";
                     Set<Page> setTok2 = null;
-    
-                    // if(finalStack.peek() instanceof String){
-                    //     stringTok2 = (String) finalStack.pop();
-                    //     setTok2 = wordQuery(stringTok2);
-                    //     // isString = true;
-                    // }
-                    // else{
-                        setTok2 = (Set<Page>) finalStack.pop();
-                        // isString = false;
-                    // }
+
+                    setTok2 = (Set<Page>) finalStack.pop();
 
                     if(qpoll.equals("&")){
-                        System.out.println("got to and");
                         setTok1.retainAll(setTok2);
                         finalStack.push(setTok1);
                     }
                     else{
-                        System.out.println("got to or");
                         setTok1.addAll(setTok2);
                         finalStack.push(setTok1);
                     }
@@ -134,8 +118,7 @@ public class WebQueryEngine {
             }
             
         }
-        System.out.println(finalStack.peek());
-        return (Set<Page>) finalStack.pop();
+        return finalStack.pop();
 
 
     }
@@ -193,6 +176,9 @@ public class WebQueryEngine {
             else{
                 token = token + Character.toString(line.charAt(i));
                 i++;
+                if(i == line.length()){
+                    allTokens.add(token);
+                }
             }
         }
 
@@ -210,5 +196,35 @@ public class WebQueryEngine {
         }
 
         return phraseToken;
+    }
+
+    public String cleanUpQuery(String query){
+        query = query.replaceAll("[ ]+", " ");
+        query = query.toLowerCase();
+        boolean isPhrase = false;
+        String newQuery = "";
+        
+        for(int i = 0; i < query.length(); i++){
+            newQuery = newQuery + query.charAt(i);
+
+            if(!isPhrase){
+                if(query.charAt(i) == '\"'){
+                    isPhrase = true;
+                }
+                if(query.charAt(i) == ' '){
+                    newQuery = newQuery.substring(0, newQuery.length() - 1) + "&";
+                    if((newQuery.charAt(newQuery.length() - 2) == '!') || (newQuery.charAt(newQuery.length() - 2) == '|') || (newQuery.charAt(newQuery.length() - 2) == ')')){
+                        newQuery = newQuery.substring(0, newQuery.length() - 1);
+                    }
+                }
+            }
+            else{
+                if(query.charAt(i) == '\"'){
+                    isPhrase = false;
+                }
+            }
+        }
+
+        return newQuery;
     }
 }

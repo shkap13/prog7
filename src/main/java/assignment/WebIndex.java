@@ -25,8 +25,6 @@ public class WebIndex extends Index {
 
     public WebIndex(){
         urlMap = new HashMap<Page, HashMap<String, HashSet<Integer>>>();
-        //first index will be the url
-        // List<String> wordStrings = new ArrayList<String> (Arrays.asList(pageString.split(" ")));
     }
 
     public void addURl(String pageString){
@@ -54,13 +52,13 @@ public class WebIndex extends Index {
         
        for(int i = 1; i < wordStrings.length; i++){
             
-            if(wordMap.get(wordStrings[i]) == null){
+            if(wordMap.get(wordStrings[i].toLowerCase()) == null){
                 HashSet<Integer> temp = new HashSet<Integer>();
                 temp.add(i);
-                wordMap.put(wordStrings[i], temp);
+                wordMap.put(wordStrings[i].toLowerCase(), temp);
             }
             else{
-                wordMap.get(wordStrings[i]).add(i);
+                wordMap.get(wordStrings[i].toLowerCase()).add(i);
             }
        }
 
@@ -70,17 +68,17 @@ public class WebIndex extends Index {
     public HashSet<Page> getURLForWord(String word){
         HashSet<Page> urlList = new HashSet<Page>();
         if(urlMap == null){
-            System.out.println("im fucking sobbing");
+            return null;
         }
         if(urlMap.keySet() == null){
-            System.out.println("im crying");
+            return null;
         }
         Iterator iter = urlMap.keySet().iterator();
-        
+
         while(iter.hasNext()){
             Page page = (Page) iter.next();
             HashMap<String, HashSet<Integer>> map = urlMap.get(page);
-
+            
             if(map.get(word) != null){
                 urlList.add(page);
             }
@@ -89,28 +87,58 @@ public class WebIndex extends Index {
         return urlList;   
     }
 
+    //returns set of urls containing all of the words in the array passed 
+    //useful for phrases
+    public HashSet<Page> getURLForAllWords(String [] words){
+
+        HashSet<Page> currentSet = getURLForWord(words[0]);
+        for(int i = 1; i < words.length; i++){
+            HashSet<Page> tempSet = getURLForWord(words[i]);
+            currentSet.retainAll(tempSet);
+        }
+
+        return currentSet;
+    }
+
+    public HashSet<Page> getURLForAllPhrase(HashSet<Page> allURL, String [] words){
+
+        Iterator<Page> iter = allURL.iterator();
+
+        while(iter.hasNext()){
+            Page currentPage = iter.next();
+            HashMap<String, HashSet<Integer>> tempWordMap = urlMap.get(currentPage);
+            HashSet<Integer> locations = tempWordMap.get(words[0]);
+            
+            for(int i = 1; i < words.length; i++){
+                HashSet<Integer> nextLocations = tempWordMap.get(words[i]);
+                HashSet<Integer> newSet = new HashSet<Integer>();
+
+                Iterator<Integer> locIterator = nextLocations.iterator();
+
+                while(locIterator.hasNext()){
+                    int temp = locIterator.next();
+                    temp--;
+
+                    if(locations.contains(temp)){
+                        newSet.add(temp + 1);
+                    }
+                }
+
+                locations = newSet;
+            }
+
+            if(locations.size() < 1){
+                allURL.remove(currentPage);
+            }
+        }
+
+        return allURL;
+
+    }
+
     public Set<Page> getAllURL(){
-        return urlMap.keySet();
+        HashSet<Page> newSet = new HashSet<>(urlMap.keySet());
+        return newSet;
     }
 
-    public void printWebIndex(){
-        System.out.println(urlMap);
-    }
-
-    public void printWordMap(String url){
-
-        try{
-            Page page = new Page(new URL(url));
-            System.out.println(urlMap.get(page));
-        }
-
-        catch(MalformedURLException e){
-            System.err.println("the stupid url u passed is illegal dumbass");
-        }
-
-    }
-
-    // TODO: Implement all of this! You may choose your own data structures an internal APIs.
-    // You should not need to worry about serialization (just make any other data structures you use
-    // here also serializable - the Java standard library data structures already are, for example).
 }

@@ -54,21 +54,39 @@ public class Testing {
         );
     }
 
-    @Test 
-    public void testParseQueryQueue(){
+    // @Test 
+    // public void testParseQueryQueue(){
+    //     WebQueryEngine eng = new WebQueryEngine();
+    //     Queue<String> actualQue = eng.parseQueryQueue("((hello&it)|(\"jk i love\"|lmao))");
+
+    //     Queue<String> que = new LinkedList<String>();
+    //     que.add("hello");
+    //     que.add("it");
+    //     que.add("&");
+    //     que.add("jk i love");
+    //     que.add("lmao");
+    //     que.add("|");
+    //     que.add("|");
+
+    //     assertTrue(actualQue.equals(que));
+
+    // }
+
+    @Test
+    public void testGetURLForAllWords(){
+        
+    }
+
+    @Test
+    public void testCleanUpQuery(){
         WebQueryEngine eng = new WebQueryEngine();
-        Queue<String> actualQue = eng.parseQueryQueue("((hello&it)|(\"jk i love\"|lmao))");
 
-        Queue<String> que = new LinkedList<String>();
-        que.add("hello");
-        que.add("it");
-        que.add("&");
-        que.add("jk i love");
-        que.add("lmao");
-        que.add("|");
-        que.add("|");
+        assertAll(
+            () -> assertEquals("!not", eng.cleanUpQuery("! not")),
+            () -> assertEquals("click&pages", eng.cleanUpQuery("click     pages")),
+            () -> assertEquals("(!(\"hallelujah lin\"&please)|save)", eng.cleanUpQuery("(! (\"hallelujah LIN\" please)     | save)"))
 
-        assertTrue(actualQue.equals(que));
-
+        );
+        
     }
 }
