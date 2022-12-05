@@ -1,6 +1,7 @@
 package assignment;
 
 import java.util.*;
+import java.io.File;
 import java.net.*;
 import org.attoparser.simple.*;
 
@@ -18,6 +19,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     int allPathsIndex;
     String pageString;
     WebIndex wIndex;
+    int [] scriptStyleTracker;
 
 
     public CrawlingMarkupHandler() {
@@ -26,6 +28,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         allPaths = new ArrayList<String>();
         int allPathsIndex = 0;
         wIndex = new WebIndex();
+        scriptStyleTracker = new int[2];
     }
 
     //change back to return void
@@ -176,20 +179,37 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
 
 
     public void handleOpenElement(String elementName, Map<String, String> attributes, int line, int col) {
+
+        if(elementName.equals("script")){
+            int temp = scriptStyleTracker[0];
+            scriptStyleTracker[0] = temp + 1;
+        }
+        else if(elementName.equals("style")){
+            int temp = scriptStyleTracker[1];
+            scriptStyleTracker[1] = temp + 1;
+        }
         
         if(attributes != null){
+            // System.out.println("getting into attributes)");
             if(attributes.get("href") != null){
+                // System.out.println("getting into attributes getting into href");
                 path = currentPathString + attributes.get("href");
-                // System.out.println("path is: " + path);
+                // System.out.println("the path here is: " + path);
 
                 if(path.contains("..")){
                     path = removeRelative(path);
                 }
 
-                // System.out.println("after removing relative, path is: " + path);
-                if(!allPaths.contains(path)){
-                    allPaths.add(path);
+                File file = new File(path.substring(5));
+                
+                if(file.isFile()){
+                    // System.out.println("getting into is a file");
+                    if(!allPaths.contains(path)){
+                        // System.out.println("addig the path");
+                        allPaths.add(path);
+                    }
                 }
+               
     
             }
         }
@@ -203,10 +223,17 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     * @param col         the column in the document where this element appears.
     */
     public void handleCloseElement(String elementName, int line, int col) {
-        // TODO: Implement this.
+        if(elementName.equals("script")){
+            int temp = scriptStyleTracker[0];
+            scriptStyleTracker[0] = temp - 1;
+        }
+
+        else if(elementName.equals("style")){
+            int temp = scriptStyleTracker[1];
+            scriptStyleTracker[1] = temp - 1;
+        }
     }
 
-    //WHAT DO WE HAVE TO DO
     /**
     * Called whenever characters are found inside a tag. Note that the parser is not
     * required to return all characters in the tag in a single chunk. Whitespace is
@@ -217,7 +244,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     */
     public void handleText(char[] ch, int start, int length, int line, int col) {
 
-        //ONLY IN BODY TAG
+        if((scriptStyleTracker[0] > 0) || (scriptStyleTracker[1] > 0)){
+            return;
+        }
         for(int i = start; i < start + length; i++) {
             // Instead of printing raw whitespace, we're escaping it
             switch(ch[i]) {

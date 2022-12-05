@@ -21,6 +21,7 @@ public class WebCrawler {
     public static void main(String[] args) {
 
         // Basic usage information
+        //CHANGE SYSTEM.EXIT
         if (args.length == 0) {
             System.err.println("Error: No URLs specified.");
             System.exit(1);
@@ -71,12 +72,19 @@ public class WebCrawler {
                 parser.parse(new InputStreamReader(remaining.poll().openStream()), handler);
                 // Add any new URLs
                 remaining.addAll(handler.newURLs());
-                handler.getIndex().save("index.db");
             }
             catch(Exception e){
                 continue;
             }
             
+        }
+
+        try{
+            handler.getIndex().save("index.db");
+        }
+        catch(IOException e){
+            System.err.println("index.db does not exist???");
+            return;
         }
 
     }

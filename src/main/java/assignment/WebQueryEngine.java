@@ -39,21 +39,29 @@ public class WebQueryEngine {
 
         String newquery = cleanUpQuery(query);        
 
-        ArrayList<String> tokens = createTokens(query);
+        System.out.println("the newquery is: " + newquery);
+        ArrayList<String> tokens = createTokens(newquery);
 
         if((tokens.size() == 1) || (tokens.size() == 2 && tokens.get(0).equals("!"))){
             if(newquery.charAt(0) == '!'){
                 Set<Page> allURL = index.getAllURL();
                 allURL.removeAll(wordQuery(newquery.substring(1)));
+                System.out.println(allURL.size());
                 return allURL;
             }
             if(newquery.charAt(0) == '\"'){
-                return phraseQuery(tokens.get(0));
+                HashSet<Page> returnSet = phraseQuery(tokens.get(0));
+                System.out.println(returnSet.size());
+                return returnSet;
             }
-            return wordQuery(newquery);
+            HashSet<Page> returnSet = wordQuery(newquery);
+            System.out.println(returnSet.size());
+            return returnSet;
         }
         else{
-            return complexQuery(tokens);
+            Set<Page> returnSet = complexQuery(tokens);
+            System.out.println(returnSet.size());
+            return returnSet;
         }
 
     }
@@ -201,6 +209,8 @@ public class WebQueryEngine {
     public String cleanUpQuery(String query){
         query = query.replaceAll("[ ]+", " ");
         query = query.toLowerCase();
+
+        System.out.println("query without spaces is: " + query);
         boolean isPhrase = false;
         String newQuery = "";
         
@@ -212,9 +222,24 @@ public class WebQueryEngine {
                     isPhrase = true;
                 }
                 if(query.charAt(i) == ' '){
-                    newQuery = newQuery.substring(0, newQuery.length() - 1) + "&";
-                    if((newQuery.charAt(newQuery.length() - 2) == '!') || (newQuery.charAt(newQuery.length() - 2) == '|') || (newQuery.charAt(newQuery.length() - 2) == ')')){
-                        newQuery = newQuery.substring(0, newQuery.length() - 1);
+                            
+                    // newQuery = newQuery.substring(0, newQuery.length() - 1) + "&";
+                    // if((newQuery.charAt(newQuery.length() - 2) == '!') || (newQuery.charAt(newQuery.length() - 2) == '|') || (newQuery.charAt(newQuery.length() - 2) == ')') || (newQuery.charAt(newQuery.length() - 2) == '&')){
+                    //     newQuery = newQuery.substring(0, newQuery.length() - 1);
+                    //     if((newQuery.charAt(newQuery.length() - 2) == '&') && (newQuery.charAt(newQuery.length() - 1) == '&')){
+                    //         newQuery = newQuery.substring(0, newQuery.length() - 1);
+                    //     }
+                    // }
+                   
+                    newQuery = newQuery.substring(0, newQuery.length() - 1);
+                    if(i+1 < query.length()){
+                        if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&'))){
+                        
+                        }
+                        else{
+                            newQuery = newQuery + "&";
+                        }
+
                     }
                 }
             }
@@ -223,6 +248,10 @@ public class WebQueryEngine {
                     isPhrase = false;
                 }
             }
+
+            // System.out.println(newQuery);
+
+
         }
 
         return newQuery;

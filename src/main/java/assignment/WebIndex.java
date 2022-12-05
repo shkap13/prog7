@@ -39,6 +39,8 @@ public class WebIndex extends Index {
                 // System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
             }
 
+            System.out.println("url was added!: " + wordStrings[0]);
+
         }
 
         catch(MalformedURLException e){
@@ -91,6 +93,7 @@ public class WebIndex extends Index {
     //useful for phrases
     public HashSet<Page> getURLForAllWords(String [] words){
 
+        System.out.println("words.length: " + words.length);
         HashSet<Page> currentSet = getURLForWord(words[0]);
         for(int i = 1; i < words.length; i++){
             HashSet<Page> tempSet = getURLForWord(words[i]);

@@ -84,7 +84,10 @@ public class Testing {
         assertAll(
             () -> assertEquals("!not", eng.cleanUpQuery("! not")),
             () -> assertEquals("click&pages", eng.cleanUpQuery("click     pages")),
-            () -> assertEquals("(!(\"hallelujah lin\"&please)|save)", eng.cleanUpQuery("(! (\"hallelujah LIN\" please)     | save)"))
+            () -> assertEquals("(!(\"hallelujah lin\"&please)|save)", eng.cleanUpQuery("(! (\"hallelujah LIN\" please)     | save)")),
+            () -> assertEquals("(should&quiet)", eng.cleanUpQuery("(should & quiet)")),
+            () -> assertEquals("(a|!a)", eng.cleanUpQuery("(a | !a)"))
+
 
         );
         
