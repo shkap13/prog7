@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.*;
 
 import org.attoparser.simple.*;
+import org.attoparser.ParseException;
 import org.attoparser.config.ParseConfiguration;
 
 /**
@@ -72,9 +73,20 @@ public class WebCrawler {
                 // Add any new URLs
                 remaining.addAll(handler.newURLs());
             }
-            catch(Exception e){
+            catch(IOException e){
                 continue;
             }
+            catch(ParseException e){
+                continue;
+            }
+            // catch (Exception e) {
+            //     // Bad exception handling :(
+            //     System.err.println("Error: Index generation failed!");
+            //     e.printStackTrace();
+            //     return;
+            //     //System.exit(1);
+            // }
+            
             
         }
 

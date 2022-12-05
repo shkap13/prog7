@@ -79,7 +79,7 @@ public class WebIndex extends Index {
 
         while(iter.hasNext()){
             Page page = (Page) iter.next();
-            HashMap<String, HashSet<Integer>> map = urlMap.get(page);
+            HashMap<String, HashSet<Integer>> map = (HashMap<String, HashSet<Integer>>) urlMap.get(page).clone();
             
             if(map.get(word) != null){
                 urlList.add(page);
@@ -94,9 +94,9 @@ public class WebIndex extends Index {
     public HashSet<Page> getURLForAllWords(String [] words){
 
         System.out.println("words.length: " + words.length);
-        HashSet<Page> currentSet = getURLForWord(words[0]);
+        HashSet<Page> currentSet = new HashSet<Page>(getURLForWord(words[0]));
         for(int i = 1; i < words.length; i++){
-            HashSet<Page> tempSet = getURLForWord(words[i]);
+            HashSet<Page> tempSet = new HashSet<Page> (getURLForWord(words[i]));
             currentSet.retainAll(tempSet);
         }
 
@@ -105,18 +105,24 @@ public class WebIndex extends Index {
 
     public HashSet<Page> getURLForAllPhrase(HashSet<Page> allURL, String [] words){
 
+        HashSet<Page> newURLSet = new HashSet<Page>(allURL);
         Iterator<Page> iter = allURL.iterator();
 
         while(iter.hasNext()){
             Page currentPage = iter.next();
             HashMap<String, HashSet<Integer>> tempWordMap = urlMap.get(currentPage);
-            HashSet<Integer> locations = tempWordMap.get(words[0]);
+
+            HashSet<Integer> locations = new HashSet<Integer>(tempWordMap.get(words[0]));
+
             
             for(int i = 1; i < words.length; i++){
                 HashSet<Integer> nextLocations = tempWordMap.get(words[i]);
+
                 HashSet<Integer> newSet = new HashSet<Integer>();
 
+
                 Iterator<Integer> locIterator = nextLocations.iterator();
+
 
                 while(locIterator.hasNext()){
                     int temp = locIterator.next();
@@ -131,11 +137,12 @@ public class WebIndex extends Index {
             }
 
             if(locations.size() < 1){
-                allURL.remove(currentPage);
+                newURLSet.remove(currentPage);
             }
+
         }
 
-        return allURL;
+        return newURLSet;
 
     }
 
