@@ -28,7 +28,8 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         wIndex = new WebIndex();
     }
 
-    public void setCurrentPathString(String currPathInput){
+    //change back to return void
+    public String setCurrentPathString(String currPathInput){
         currPathInput = "file:" + currPathInput;
         currentPathString = currPathInput;
 
@@ -39,9 +40,59 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             }
             
             currentPathString = currentPathString.substring(0,i);
-
         }
 
+        if(currentPathString.contains("..")){
+             // System.out.println("currentPathString after cutting off end: " + currentPathString);
+
+           currentPathString = removeRelative(currentPathString);
+        }
+       
+        return currentPathString;
+    }
+
+    public String removeRelative(String current){
+        int dotsCounter = 0;
+        int startIndex = 0;
+
+        for(int i = 0; i < current.length(); ){
+            int index = current.indexOf("..", i);
+            if(index > -1){
+                if(dotsCounter == 0){
+                    startIndex = index;
+                }
+                dotsCounter++;
+                i = index + 2;
+            }
+            else{
+                break;
+            }
+        }
+
+        // System.out.println("dotsCounter is: " + dotsCounter);
+
+        String tempString = current.substring(0, startIndex);
+        int tempIndex = tempString.length()-1;
+
+        while(dotsCounter >= 0){
+            if(tempString.charAt(tempIndex) == '/'){
+                dotsCounter--;
+            }
+
+            tempString = tempString.substring(0, tempIndex);
+            tempIndex = tempString.length() - 1;
+            // System.out.println("tempString is: " + tempString);
+        }
+
+        // System.out.println("final tempString is: " + tempString + " and the substring is: " + currentPathString.substring(startIndex - 1));
+
+        current = tempString + current.substring(startIndex - 1);
+
+        current = current.replace("/..", "");
+
+        // System.out.println("final currentPathString is: " + currentPathString);
+
+        return current;
     }
 
     public void getTheURL(URL url){
@@ -129,6 +180,13 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         if(attributes != null){
             if(attributes.get("href") != null){
                 path = currentPathString + attributes.get("href");
+                // System.out.println("path is: " + path);
+
+                if(path.contains("..")){
+                    path = removeRelative(path);
+                }
+
+                // System.out.println("after removing relative, path is: " + path);
                 if(!allPaths.contains(path)){
                     allPaths.add(path);
                 }

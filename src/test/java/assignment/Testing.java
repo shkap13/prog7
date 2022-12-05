@@ -89,4 +89,14 @@ public class Testing {
         );
         
     }
+
+    @Test
+    public void testRemoveRelative(){
+        CrawlingMarkupHandler handler = new CrawlingMarkupHandler();
+
+        String lol = handler.removeRelative("/Users/shreyakappala/Desktop/workspace/prog7/../../../president96/");
+        System.out.println(lol);
+
+        assertEquals("/Users/shreyakappala/president96/", lol);
+    }
 }
