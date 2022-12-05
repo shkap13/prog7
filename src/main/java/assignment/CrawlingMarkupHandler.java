@@ -33,7 +33,6 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
 
     //change back to return void
     public String setCurrentPathString(String currPathInput){
-        currPathInput = "file:" + currPathInput;
         currentPathString = currPathInput;
 
 

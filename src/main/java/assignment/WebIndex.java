@@ -39,7 +39,7 @@ public class WebIndex extends Index {
                 // System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
             }
 
-            System.out.println("url was added!: " + wordStrings[0]);
+            // System.out.println("url was added!: " + wordStrings[0]);
 
         }
 

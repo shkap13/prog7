@@ -21,10 +21,9 @@ public class WebCrawler {
     public static void main(String[] args) {
 
         // Basic usage information
-        //CHANGE SYSTEM.EXIT
         if (args.length == 0) {
             System.err.println("Error: No URLs specified.");
-            System.exit(1);
+            return;
         }
 
         // We'll throw all the args into a queue for processing.
@@ -64,7 +63,7 @@ public class WebCrawler {
         while (!remaining.isEmpty()) {
             // System.out.println(remaining.peek().toString());
             //set current path string in crawling markup handler so that the entire path can be constructed
-            handler.setCurrentPathString(remaining.peek().getFile());
+            handler.setCurrentPathString(remaining.peek().toString());
             handler.getTheURL(remaining.peek());
 
             try{

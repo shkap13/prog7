@@ -84,15 +84,20 @@ public class WebQueryEngine {
         Stack<Set <Page>> finalStack = new Stack<Set <Page>>();
 
         while(!que.isEmpty()){
+
             qpoll = que.poll();
+           
             
             //pushes to stack if not operator
             if(!((qpoll.equals("&")) || (qpoll.equals("|")) || (qpoll.equals("!")))){
                 if(qpoll.contains(" ")){
                     finalStack.push(phraseQuery(qpoll));
+                    System.out.println("pushed from space and pushed: " + qpoll + ", " + phraseQuery(qpoll).size());
                 }
                 else{
                     finalStack.push(wordQuery(qpoll));
+                    System.out.println("pushed from word query and pushed: " + qpoll + ", " + wordQuery(qpoll).size());
+
                 }
             }
             else{
@@ -106,20 +111,26 @@ public class WebQueryEngine {
 
                     allURLSet.remove(setTok1);
                     finalStack.push(allURLSet);
+                    System.out.println("pushed from !: " + allURLSet.size());
+
                 }
                 else{
-                    String stringTok2 = "";
                     Set<Page> setTok2 = null;
 
-                    setTok2 = (Set<Page>) finalStack.pop();
+                    setTok2 = finalStack.pop();
 
                     if(qpoll.equals("&")){
+                        System.out.println("size of setTok1 and size of setTok2: " + setTok1.size() + ", " + setTok2.size());
                         setTok1.retainAll(setTok2);
+                        System.out.println("sixe of setTok1: " + setTok1.size());
                         finalStack.push(setTok1);
+                        System.out.println("pushed from and: " + setTok1.size());
                     }
                     else{
                         setTok1.addAll(setTok2);
                         finalStack.push(setTok1);
+                        System.out.println("pushed from or: " + setTok2.size());
+
                     }
                 }
                 
@@ -233,7 +244,7 @@ public class WebQueryEngine {
                    
                     newQuery = newQuery.substring(0, newQuery.length() - 1);
                     if(i+1 < query.length()){
-                        if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&'))){
+                        if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
                         
                         }
                         else{
@@ -253,6 +264,8 @@ public class WebQueryEngine {
 
 
         }
+
+        newQuery = "(" + newQuery + ")";
 
         return newQuery;
     }
