@@ -12,10 +12,12 @@ import java.util.*;
 public class WebQueryEngine {
     WebIndex index;
 
+    //actual constructor
     public WebQueryEngine(WebIndex wIndex){
         index = wIndex;
     }
 
+    //dummy constructor created for test purposes
     public WebQueryEngine(){
         index = null;
     }
@@ -26,7 +28,6 @@ public class WebQueryEngine {
      * @return A WebQueryEngine ready to be queried.
      */
     public static WebQueryEngine fromIndex(WebIndex index) {
-        // TODO: Implement this!
         return new WebQueryEngine(index);
     }
 
@@ -44,28 +45,30 @@ public class WebQueryEngine {
         ArrayList<String> tokens = createTokens(newquery);
 
         if((tokens.size() == 1) || (tokens.size() == 2 && tokens.get(0).equals("!"))){
+
             if(newquery.charAt(0) == '!'){
                 newquery = tokens.get(1);
+                Set<Page> allURL = index.getAllURL();
+
                 if(newquery.contains(" ")){
-                    System.out.println("bitch are u going in here");
-                    Set<Page> allURL = index.getAllURL();
                     allURL.removeAll(phraseQuery(newquery));
                     System.out.println("phrase is: " + newquery + ", " + allURL.size());
-                    return allURL;
                 }
                 else{
-                    Set<Page> allURL = index.getAllURL();
                     allURL.removeAll(wordQuery(newquery.substring(1)));
-                    System.out.println(allURL.size());
-                    return allURL;
+                    System.out.println("word is: " + newquery + ", " + allURL.size());
                 }
                 
+                return allURL;
+
             }
+
             if(newquery.charAt(0) == '\"'){
                 HashSet<Page> returnSet = phraseQuery(tokens.get(0));
                 System.out.println(returnSet.size());
                 return returnSet;
             }
+
             HashSet<Page> returnSet = wordQuery(newquery);
             System.out.println(returnSet.size());
             return returnSet;
@@ -79,8 +82,7 @@ public class WebQueryEngine {
     }
 
     public HashSet<Page> wordQuery(String word){
-        HashSet<Page> lol = index.getURLForWord(word);
-        return lol;
+        return index.getURLForWord(word);
     }
 
     public HashSet<Page> phraseQuery(String phrase){
@@ -123,18 +125,19 @@ public class WebQueryEngine {
                     System.out.println("pushed from !: " + allURLSet.size());
 
                 }
+                //other 2 operators
                 else{
-                    Set<Page> setTok2 = null;
+                    Set<Page> setTok2 = finalStack.pop();
 
-                    setTok2 = finalStack.pop();
-
+                    //when &, takes intersection of two sets and then pushes to the stakc
                     if(qpoll.equals("&")){
                         System.out.println("size of setTok1 and size of setTok2: " + setTok1.size() + ", " + setTok2.size());
                         setTok1.retainAll(setTok2);
-                        System.out.println("sixe of setTok1: " + setTok1.size());
+                        System.out.println("size of setTok1: " + setTok1.size());
                         finalStack.push(setTok1);
                         System.out.println("pushed from and: " + setTok1.size());
                     }
+                    //when |, takes union of two sets and then pushes to stack
                     else{
                         setTok1.addAll(setTok2);
                         finalStack.push(setTok1);
@@ -238,6 +241,7 @@ public class WebQueryEngine {
     }
 
     public String cleanUpQuery(String query){
+        query = query.replaceAll("[\\t\\n\\r]+"," ");
         query = query.replaceAll("[ ]+", " ");
         query = query.toLowerCase();
 
@@ -253,24 +257,13 @@ public class WebQueryEngine {
                     isPhrase = true;
                 }
                 if(query.charAt(i) == ' '){
-                            
-                    // newQuery = newQuery.substring(0, newQuery.length() - 1) + "&";
-                    // if((newQuery.charAt(newQuery.length() - 2) == '!') || (newQuery.charAt(newQuery.length() - 2) == '|') || (newQuery.charAt(newQuery.length() - 2) == ')') || (newQuery.charAt(newQuery.length() - 2) == '&')){
-                    //     newQuery = newQuery.substring(0, newQuery.length() - 1);
-                    //     if((newQuery.charAt(newQuery.length() - 2) == '&') && (newQuery.charAt(newQuery.length() - 1) == '&')){
-                    //         newQuery = newQuery.substring(0, newQuery.length() - 1);
-                    //     }
-                    // }
                    
                     newQuery = newQuery.substring(0, newQuery.length() - 1);
                     if((i+1 < query.length()) && (i-1 >= 0)){
                         // if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
                         
                         // }
-                        if(((query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
-                        
-                        }
-                        else{
+                        if(!((query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
                             newQuery = newQuery + "&";
                         }
 
@@ -282,9 +275,6 @@ public class WebQueryEngine {
                     isPhrase = false;
                 }
             }
-
-            // System.out.println(newQuery);
-
 
         }
 

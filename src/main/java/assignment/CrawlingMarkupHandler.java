@@ -31,7 +31,6 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         scriptStyleTracker = new int[2];
     }
 
-    //change back to return void
     public String setCurrentPathString(String currPathInput){
         currentPathString = currPathInput;
 
@@ -45,7 +44,6 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         }
 
         if(currentPathString.contains("..")){
-             // System.out.println("currentPathString after cutting off end: " + currentPathString);
 
            currentPathString = removeRelative(currentPathString);
         }
@@ -71,8 +69,6 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             }
         }
 
-        // System.out.println("dotsCounter is: " + dotsCounter);
-
         String tempString = current.substring(0, startIndex);
         int tempIndex = tempString.length()-1;
 
@@ -83,16 +79,11 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
 
             tempString = tempString.substring(0, tempIndex);
             tempIndex = tempString.length() - 1;
-            // System.out.println("tempString is: " + tempString);
         }
-
-        // System.out.println("final tempString is: " + tempString + " and the substring is: " + currentPathString.substring(startIndex - 1));
 
         current = tempString + current.substring(startIndex - 1);
 
         current = current.replace("/..", "");
-
-        // System.out.println("final currentPathString is: " + currentPathString);
 
         return current;
     }
@@ -188,12 +179,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
             scriptStyleTracker[1] = temp + 1;
         }
         
-        if(attributes != null){
-            // System.out.println("getting into attributes)");
+        if(attributes != null && elementName.equals("a")){
             if(attributes.get("href") != null){
-                // System.out.println("getting into attributes getting into href");
                 path = currentPathString + attributes.get("href");
-                // System.out.println("the path here is: " + path);
 
                 if(path.contains("..")){
                     path = removeRelative(path);
@@ -202,9 +190,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
                 File file = new File(path.substring(5));
                 
                 if(file.isFile()){
-                    //System.out.println("getting into is a file");
                     if(!allPaths.contains(path)){
-                        //System.out.println("addig the path: " + path);
                         allPaths.add(path);
                     }
                 }
@@ -304,6 +290,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
                     pageString = pageString + " ";
                     break;
                 case '}':
+                    pageString = pageString + " ";
+                    break;
+                case '&':
                     pageString = pageString + " ";
                     break;
                 default:

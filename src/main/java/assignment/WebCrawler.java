@@ -13,6 +13,7 @@ import org.attoparser.config.ParseConfiguration;
  * to index.db.
  */
 public class WebCrawler {
+    static WebIndex index;
 
    
     /**
@@ -42,27 +43,8 @@ public class WebCrawler {
         ISimpleMarkupParser parser = new SimpleMarkupParser(ParseConfiguration.htmlConfiguration());
         CrawlingMarkupHandler handler = new CrawlingMarkupHandler();
 
-        // // Try to start crawling, adding new URLS as we see them.
-        // try {
-        //     while (!remaining.isEmpty()) {
-        //         //set current path string in crawling markup handler so that the entire path can be constructed
-        //         handler.setCurrentPathString(remaining.peek().getFile());
-        //         // Parse the next URL's page
-        //         parser.parse(new InputStreamReader(remaining.poll().openStream()), handler);
-        //         // Add any new URLs
-        //         remaining.addAll(handler.newURLs());
-        //     }
-
-        //     handler.getIndex().save("index.db");
-        // } catch (Exception e) {
-        //     // Bad exception handling :(
-        //     System.err.println("Error: Index generation failed!");
-        //     e.printStackTrace();
-        //     //System.exit(1);
-        // }
-
+       
         while (!remaining.isEmpty()) {
-            // System.out.println(remaining.peek().toString());
             String print = remaining.peek().toString();
             //set current path string in crawling markup handler so that the entire path can be constructed
             handler.setCurrentPathString(remaining.peek().toString());
@@ -82,19 +64,11 @@ public class WebCrawler {
                 System.err.println("this file is causing a Parse Exception: " + print);
                 continue;
             }
-            // catch (Exception e) {
-            //     // Bad exception handling :(
-            //     System.err.println("Error: Index generation failed!");
-            //     e.printStackTrace();
-            //     return;
-            //     //System.exit(1);
-            // }
-            
-            
         }
 
         try{
-            handler.getIndex().save("index.db");
+            index = (WebIndex) handler.getIndex();
+            index.save("index.db");
         }
         catch(IOException e){
             System.err.println("index.db does not exist???");

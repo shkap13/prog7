@@ -11,7 +11,6 @@ import java.util.Iterator;
  * A web-index which efficiently stores information about pages. Serialization is done automatically
  * via the superclass "Index" and Java's Serializable interface.
  *
- * TODO: Implement this!
  */
 public class WebIndex extends Index {
     /**
@@ -19,6 +18,8 @@ public class WebIndex extends Index {
      */
     private static final long serialVersionUID = 1L;
     HashMap<Page, HashMap<String, HashSet<Integer>>> urlMap;
+    String [] wordStrings;
+
 
     public WebIndex(){
         urlMap = new HashMap<Page, HashMap<String, HashSet<Integer>>>();
@@ -27,7 +28,8 @@ public class WebIndex extends Index {
     public void addURl(String pageString){
 
         try{
-            String [] wordStrings = pageString.split(" ");
+            //NEED TO MOVE WORDSTRINGS BACK
+            wordStrings = pageString.split(" ");
             Page tempPage = new Page(new URL(wordStrings[0]));
     
             if(urlMap.get(tempPage) == null){
@@ -62,6 +64,7 @@ public class WebIndex extends Index {
             }
        }
 
+    //    System.out.println(wordMap);
        return wordMap;
     }
 
@@ -147,6 +150,10 @@ public class WebIndex extends Index {
     public Set<Page> getAllURL(){
         HashSet<Page> newSet = new HashSet<>(urlMap.keySet());
         return newSet;
+    }
+
+    public HashMap<Page, HashMap<String, HashSet<Integer>>> returnURLMapCopy(){
+        return (HashMap<Page, HashMap<String, HashSet<Integer>>>) urlMap.clone();
     }
 
 }
