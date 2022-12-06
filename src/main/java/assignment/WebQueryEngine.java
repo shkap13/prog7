@@ -109,7 +109,7 @@ public class WebQueryEngine {
                 if(qpoll.equals("!")){
                     HashSet<Page> allURLSet = new HashSet<Page>(index.getAllURL());
 
-                    allURLSet.remove(setTok1);
+                    allURLSet.removeAll(setTok1);
                     finalStack.push(allURLSet);
                     System.out.println("pushed from !: " + allURLSet.size());
 

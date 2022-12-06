@@ -26,7 +26,7 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         absolutePath = "";
         currentPathString = "";
         allPaths = new ArrayList<String>();
-        int allPathsIndex = 0;
+        allPathsIndex = 0;
         wIndex = new WebIndex();
         scriptStyleTracker = new int[2];
     }
@@ -202,9 +202,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
                 File file = new File(path.substring(5));
                 
                 if(file.isFile()){
-                    // System.out.println("getting into is a file");
+                    //System.out.println("getting into is a file");
                     if(!allPaths.contains(path)){
-                        // System.out.println("addig the path");
+                        //System.out.println("addig the path: " + path);
                         allPaths.add(path);
                     }
                 }
@@ -249,34 +249,12 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         for(int i = start; i < start + length; i++) {
             // Instead of printing raw whitespace, we're escaping it
             switch(ch[i]) {
-                case '\\':
-                    pageString = pageString + " ";
+                case '/':
+                    pageString = pageString + "";
                     break;
-                case '"':
+                case '\n', '\r', '\t':
                     pageString = pageString + " ";
-                    break;
-                case '\'':
-                    //shouldn't change the string
-                    //pageString = pageString + "";
-                    break;
-                case '\n':
-                    pageString = pageString + " ";
-                case '\r':
-                    pageString = pageString + " ";
-                    break;
-                case '\t':
-                    pageString = pageString + " ";
-                    break;
-                case '.':
-                    pageString = pageString + " ";
-                    break;
-                case '?':
-                    pageString = pageString + " ";
-                    break;
-                case '!':
-                    pageString = pageString + " ";
-                    break;
-                case '-':
+                case '.', '?', '!', '-', ',', '\'', '"', '\\':
                     pageString = pageString + " ";
                     break;
                 default:

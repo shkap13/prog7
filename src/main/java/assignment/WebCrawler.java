@@ -63,6 +63,7 @@ public class WebCrawler {
 
         while (!remaining.isEmpty()) {
             // System.out.println(remaining.peek().toString());
+            String print = remaining.peek().toString();
             //set current path string in crawling markup handler so that the entire path can be constructed
             handler.setCurrentPathString(remaining.peek().toString());
             handler.getTheURL(remaining.peek());
@@ -74,9 +75,11 @@ public class WebCrawler {
                 remaining.addAll(handler.newURLs());
             }
             catch(IOException e){
+                System.err.println("this file is causing an IO Exception: " + print);
                 continue;
             }
             catch(ParseException e){
+                System.err.println("this file is causing a Parse Exception: " + print);
                 continue;
             }
             // catch (Exception e) {

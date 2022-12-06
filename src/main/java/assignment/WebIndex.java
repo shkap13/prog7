@@ -1,12 +1,9 @@
 package assignment;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.MalformedInputException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -39,7 +36,8 @@ public class WebIndex extends Index {
                 // System.out.println("is the urlMap empty?: " + urlMap.isEmpty());
             }
 
-            // System.out.println("url was added!: " + wordStrings[0]);
+            System.out.println("url was added!: " + wordStrings[0]);
+            System.out.println("size of webIndex??: " + urlMap.size());
 
         }
 
@@ -75,11 +73,11 @@ public class WebIndex extends Index {
         if(urlMap.keySet() == null){
             return null;
         }
-        Iterator iter = urlMap.keySet().iterator();
+        Iterator<Page> iter = urlMap.keySet().iterator();
 
         while(iter.hasNext()){
             Page page = (Page) iter.next();
-            HashMap<String, HashSet<Integer>> map = (HashMap<String, HashSet<Integer>>) urlMap.get(page).clone();
+            HashMap<String, HashSet<Integer>> map = urlMap.get(page);
             
             if(map.get(word) != null){
                 urlList.add(page);
@@ -96,7 +94,7 @@ public class WebIndex extends Index {
         System.out.println("words.length: " + words.length);
         HashSet<Page> currentSet = new HashSet<Page>(getURLForWord(words[0]));
         for(int i = 1; i < words.length; i++){
-            HashSet<Page> tempSet = new HashSet<Page> (getURLForWord(words[i]));
+            HashSet<Page> tempSet = getURLForWord(words[i]);
             currentSet.retainAll(tempSet);
         }
 
