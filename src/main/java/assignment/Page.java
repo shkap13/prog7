@@ -1,4 +1,5 @@
 package assignment;
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -8,8 +9,9 @@ import java.net.URL;
  *
  * TODO: Implement this!
  */
-public class Page extends Index{
-    private static final long serialVersionUID = 1L;
+public class Page implements Serializable{
+// public class Page extends Index{
+    // private static final long serialVersionUID = 1L;
     // The URL the page was located at.
     private URL url;
 

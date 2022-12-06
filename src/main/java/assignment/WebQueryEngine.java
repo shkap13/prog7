@@ -1,5 +1,6 @@
 package assignment;
 import java.net.URL;
+import java.nio.channels.NetworkChannel;
 import java.util.*;
 
 /**
@@ -44,10 +45,21 @@ public class WebQueryEngine {
 
         if((tokens.size() == 1) || (tokens.size() == 2 && tokens.get(0).equals("!"))){
             if(newquery.charAt(0) == '!'){
-                Set<Page> allURL = index.getAllURL();
-                allURL.removeAll(wordQuery(newquery.substring(1)));
-                System.out.println(allURL.size());
-                return allURL;
+                newquery = tokens.get(1);
+                if(newquery.contains(" ")){
+                    System.out.println("bitch are u going in here");
+                    Set<Page> allURL = index.getAllURL();
+                    allURL.removeAll(phraseQuery(newquery));
+                    System.out.println("phrase is: " + newquery + ", " + allURL.size());
+                    return allURL;
+                }
+                else{
+                    Set<Page> allURL = index.getAllURL();
+                    allURL.removeAll(wordQuery(newquery.substring(1)));
+                    System.out.println(allURL.size());
+                    return allURL;
+                }
+                
             }
             if(newquery.charAt(0) == '\"'){
                 HashSet<Page> returnSet = phraseQuery(tokens.get(0));
@@ -97,13 +109,10 @@ public class WebQueryEngine {
                 else{
                     finalStack.push(wordQuery(qpoll));
                     System.out.println("pushed from word query and pushed: " + qpoll + ", " + wordQuery(qpoll).size());
-
                 }
             }
             else{
-                Set<Page> setTok1 = null;
-
-                setTok1 = finalStack.pop();
+                Set<Page> setTok1 = finalStack.pop();
             
                 //dealing with !
                 if(qpoll.equals("!")){
@@ -129,7 +138,7 @@ public class WebQueryEngine {
                     else{
                         setTok1.addAll(setTok2);
                         finalStack.push(setTok1);
-                        System.out.println("pushed from or: " + setTok2.size());
+                        System.out.println("pushed from or: " + setTok1.size());
 
                     }
                 }
@@ -156,21 +165,32 @@ public class WebQueryEngine {
                 //remove open paranthesis
                 operStack.pop();
 
-                if(!operStack.isEmpty() && (operStack.peek().equals("!"))){
+            }
+            else if (tokens.get(i).equals("(")){
+                operStack.push(tokens.get(i));
+            }
+            else if ((tokens.get(i).equals("!"))){
+                operStack.push(tokens.get(i));
+                
+            }
+            //add operators to the stack
+            else if((tokens.get(i).equals("&"))|| (tokens.get(i).equals("|"))){
+                
+                while((!operStack.isEmpty()) && (!operStack.peek().equals("("))){
                     que.add(operStack.pop());
                 }
 
-            }
-            //add operators to the stack
-            else if((tokens.get(i).equals("&")) || (tokens.get(i).equals("|")) || (tokens.get(i).equals("(")) || (tokens.get(i).equals("!"))){
                 operStack.push(tokens.get(i));
-            }
+            }    
             //add any words/phrases to the queue
             else{
                 que.add(tokens.get(i));
             }
         }
 
+        while(!operStack.isEmpty()){
+            que.add(operStack.pop());
+        }
         return que;
     }
 
@@ -243,8 +263,11 @@ public class WebQueryEngine {
                     // }
                    
                     newQuery = newQuery.substring(0, newQuery.length() - 1);
-                    if(i+1 < query.length()){
-                        if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
+                    if((i+1 < query.length()) && (i-1 >= 0)){
+                        // if(((query.charAt(i+1) == '!') || (query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
+                        
+                        // }
+                        if(((query.charAt(i+1) == '|') || (query.charAt(i+1) == ')') || (query.charAt(i+1) == '&') || (query.charAt(i-1) == '!') || (query.charAt(i-1) == '|') || (query.charAt(i-1) == '&') || (query.charAt(i-1) == '('))){
                         
                         }
                         else{
@@ -264,8 +287,6 @@ public class WebQueryEngine {
 
 
         }
-
-        newQuery = "(" + newQuery + ")";
 
         return newQuery;
     }

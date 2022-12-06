@@ -249,12 +249,61 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
         for(int i = start; i < start + length; i++) {
             // Instead of printing raw whitespace, we're escaping it
             switch(ch[i]) {
-                case '/':
-                    pageString = pageString + "";
-                    break;
-                case '\n', '\r', '\t':
+                case '\n':
                     pageString = pageString + " ";
-                case '.', '?', '!', '-', ',', '\'', '"', '\\':
+                case '\r':
+                    pageString = pageString + " ";
+                case '\t':
+                    pageString = pageString + " ";
+                case '.':
+                    pageString = pageString + " ";
+                    break;
+                case '?':
+                    pageString = pageString + " ";
+                    break;
+                case '!':
+                    pageString = pageString + " ";
+                    break;
+                case '-':
+                    pageString = pageString + " ";
+                    break;
+                case ',':
+                    pageString = pageString + " ";
+                    break;
+                case '\'':
+                    pageString = pageString + " ";
+                    break;
+                case  '"':
+                    pageString = pageString + " ";
+                    break;
+                case '\\':
+                    pageString = pageString + " ";
+                    break;
+                case '/':
+                    pageString = pageString + " ";
+                    break;
+                case '(':
+                    pageString = pageString + " ";
+                    break;
+                case ')':
+                    pageString = pageString + " ";
+                    break;
+                case ':':
+                    pageString = pageString + " ";
+                    break;
+                case ';':
+                    pageString = pageString + " ";
+                    break;
+                case '[':
+                    pageString = pageString + " ";
+                    break;
+                case ']':
+                    pageString = pageString + " ";
+                    break;
+                case '{':
+                    pageString = pageString + " ";
+                    break;
+                case '}':
                     pageString = pageString + " ";
                     break;
                 default:

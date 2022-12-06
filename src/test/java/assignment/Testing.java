@@ -54,23 +54,35 @@ public class Testing {
         );
     }
 
-    // @Test 
-    // public void testParseQueryQueue(){
-    //     WebQueryEngine eng = new WebQueryEngine();
-    //     Queue<String> actualQue = eng.parseQueryQueue("((hello&it)|(\"jk i love\"|lmao))");
+    @Test 
+    public void testParseQueryQueue(){
+        WebQueryEngine eng = new WebQueryEngine();
+        ArrayList<String> tokens = new ArrayList<String>(); 
+        tokens.add("hello");
+        tokens.add("&");
+        tokens.add("!");
+        tokens.add("hallelujah");
+        tokens.add("&");
+        tokens.add("(");
+        tokens.add("save me");
+        tokens.add("|");
+        tokens.add("im fine");
+        tokens.add(")");
+        Queue<String> actualQue = eng.parseQueryQueue(tokens);
 
-    //     Queue<String> que = new LinkedList<String>();
-    //     que.add("hello");
-    //     que.add("it");
-    //     que.add("&");
-    //     que.add("jk i love");
-    //     que.add("lmao");
-    //     que.add("|");
-    //     que.add("|");
+        Queue<String> que = new LinkedList<String>();
+        que.add("hello");
+        que.add("hallelujah");
+        que.add("!");
+        que.add("&");
+        que.add("save me");
+        que.add("im fine");
+        que.add("|");
+        que.add("&");
 
-    //     assertTrue(actualQue.equals(que));
+        assertEquals(que, actualQue);
 
-    // }
+    }
 
     @Test
     public void testGetURLForAllWords(){
@@ -86,9 +98,9 @@ public class Testing {
             () -> assertEquals("click&pages", eng.cleanUpQuery("click     pages")),
             () -> assertEquals("(!(\"hallelujah lin\"&please)|save)", eng.cleanUpQuery("(! (\"hallelujah LIN\" please)     | save)")),
             () -> assertEquals("(should&quiet)", eng.cleanUpQuery("(should & quiet)")),
-            () -> assertEquals("(a|!a)", eng.cleanUpQuery("(a | !a)"))
-
-
+            () -> assertEquals("(a|!a)", eng.cleanUpQuery("(a | !a)")),
+            () -> assertEquals("\"pleasegodhelpme\"&!looll", eng.cleanUpQuery(" \"pleasegodhelpme\"&        !      looll")),
+            () -> assertEquals("i&love&chocolate", eng.cleanUpQuery("i love chocolate"))
         );
         
     }
